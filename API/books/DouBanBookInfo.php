@@ -17,7 +17,7 @@ class DouBanBookInfo extends BookInformation {
 		
 		$bookinfo = $this->getData();
 		
-		UtilHelper::writeToFile($bookinfo,'a+');
+		//UtilHelper::writeToFile($bookinfo,'a+');
 		
 		$this->_title = $bookinfo->title;
 		$this->_origin_title = $bookinfo->origin_title;
