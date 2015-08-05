@@ -28,6 +28,7 @@ class UtilHelper
     }
 	
 	/**
+	 *备注：此方法已经移到UtilFileInfo类
 	 * 格式化空间
 	 * @param unknown_type $size
 	 */
