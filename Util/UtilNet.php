@@ -51,7 +51,7 @@ class UtilNet
 	public static function getIPLoc($queryIP){  
       
       
-    $url = 'http://ip.qq.com/cgi-bin/searchip?searchip1='.$queryIP;
+    // $url = 'http://ip.qq.com/cgi-bin/searchip?searchip1='.$queryIP;
 
     $url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip='.$queryIP;
       
