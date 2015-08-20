@@ -39,7 +39,24 @@ class CommonLoader {
 		}
 	}
 
+
+	public static function loadQiniu($class)
+	{
+		$filename = dirname(__FILE__).'/'.str_replace('\\', '/', $class).'.php';
+
+		if(file_exists($filename)){
+
+			include_once $filename;
+
+		}else{
+
+			// echo "客官，我们努力找到了，$filename 没有哦:~";
+
+		}
+	}
+
 }
 spl_autoload_register(array('CommonLoader','load'));
+spl_autoload_register(array('CommonLoader','loadQiniu'));
 
 ?>
