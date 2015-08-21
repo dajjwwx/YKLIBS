@@ -196,7 +196,7 @@ class FileModel
 		//The original image
 		$destination .=  $filepath.date('Y',$this->created).'/'.date('m',$this->created).'/'.date('d',$this->created).'/'.$this->getLinkName();
 		
-		UtilHelper::writeToFile($destination,'a+',__LINE__,__FILE__);
+		// UtilHelper::writeToFile($destination,'a+',__LINE__,__FILE__);
 		
 		//此处有修改，原因是可能能生成链接，但文件已经不存在
 // 		if (!file_exists('./'.$destination.'.'.$this->extension	)) {
@@ -270,11 +270,11 @@ class FileModel
 	{
 		$defaultOption = array('width'=>210,'height'=>2000,'border'=>1,'isMask'=>false,'masksrc'=>'./public/images/logo.png','maskpos'=>4,'forceReload'=>false,'onlyPath'=>false);
 		
-		UtilHelper::writeToFile($defaultOption);
+		// UtilHelper::writeToFile($defaultOption);
 		
 		$thumbOption = array_merge($defaultOption,$thumbOption);
 		
-		UtilHelper::writeToFile($thumbOption,'a+');
+		// UtilHelper::writeToFile($thumbOption,'a+');
 	   
        	extract($thumbOption); 
      
@@ -285,7 +285,7 @@ class FileModel
        
             $target = $this->generateOriginFilePath($path, true, true,  $width);
             
-            UtilHelper::writeToFile($target,'a+');
+            // UtilHelper::writeToFile($target,'a+');
 
             if(file_exists($source))
             {

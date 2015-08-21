@@ -371,10 +371,10 @@ class UtilUploader {
 	}
 	
 	
-	private static function uploadQiniu()
-	{
+	// public static function uploadQiniu()
+	// {
 		
-	}
+	// }
 	
      /**
       * 文件上传

@@ -59,4 +59,7 @@ class CommonLoader {
 spl_autoload_register(array('CommonLoader','load'));
 spl_autoload_register(array('CommonLoader','loadQiniu'));
 
+include_once __DIR__.'/API/Qiniu/functions.php';
+
+
 ?>
