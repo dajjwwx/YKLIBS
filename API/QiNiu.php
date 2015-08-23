@@ -5,8 +5,7 @@ use Qiniu\Auth;
 use Qiniu\Storage\BucketManager;
 
 class Qiniu
-{
-	
+{	
 
 	private $domain;
 	private $accessKey;
@@ -26,7 +25,7 @@ class Qiniu
 		$this->accessKey = Yii::app()->params['QiNiu'][$bucket]['accessKey'];
 		$this->secretKey = Yii::app()->params['QiNiu'][$bucket]['secretKey'];
 
-		echo $this->accessKey.'---'.$this->secretKey.'<br />';
+		// echo $this->accessKey.'---'.$this->secretKey.'<br />';
 
 		$this->getToken();
 
@@ -39,7 +38,7 @@ class Qiniu
 
 		$this->token = $this->auth->uploadToken($this->bucket);
 
-		var_dump($this->auth);
+		// var_dump($this->auth);
 	}
 
 	public function getUploadManager()
@@ -53,7 +52,7 @@ class Qiniu
 	{
 		$this->bucketManager = new BucketManager($this->auth);
 
-		var_dump($this->bucketManager);
+		// var_dump($this->bucketManager);
 
 		return $this;
 	}
@@ -113,16 +112,16 @@ class Qiniu
 		list($ret, $err) = $this->uploadManager->putFile($this->token, $key, $filePath);
 		//echo "\n====> putFile result: \n";
 		if ($err !== null) {
-
-			return false;
+			return array(
+				'success'=>false,
+				'data'=>$err
+			);
 
 		} else {
-
-			return true;
-		    // return array(
-		    // 	'success'=>true,
-		    // 	'data'=>$ret
-		    // );
+		    return array(
+		    	'success'=>true,
+		    	'data'=>$ret
+		    );
 		}
 	}
 
@@ -149,6 +148,21 @@ class Qiniu
 		}	
 	}
 
+	public function getFilePath($key)
+	{
+		if(strpos($key, '/')== 0)
+		{
+			return $this->domain.'/@'.$key;
+		}
+		else
+		{
+			return $this->domain.$key;
+		}
+		
+	}
+
+
+
 
 	/**
 	 *根据key查寻文件信息
@@ -164,7 +178,47 @@ class Qiniu
 	 */
 	public function fileExists($key)
 	{
+		if($this->fileStat($key)[0] == null)
+		{
+			return false;
+		}
+		return true;
+	}
 
+	//将文件从文件$key 复制到文件$key2。 可以在不同bucket复制
+	public function copy($bucket, $key, $bucket2, $key2)
+	{
+
+		$err = $this->getBucketManager()->copy($bucket, $key, $bucket2, $key2);
+		// echo "\n====> copy $key to $key2 : \n";
+		if ($err !== null) {
+		    return false;
+		} else {
+		   	return true;
+		}
+	}
+
+	public function move($bucket, $key, $bucket2, $key2)
+	{
+		$err = $this->getBucketManager()->move($bucket, $key, $bucket2, $key2);
+		// echo "\n====> move $key2 to $key3 : \n";
+		if ($err !== null) {
+		    return false;
+		} else {
+		    return true;
+		}
+	}
+
+	public function delete($key)
+	{
+		$this->getBucketManager();
+		$err = $this->bucketManager->delete($this->bucket, $key);
+		// echo "\n====> delete $key3 : \n";
+		if ($err !== null) {
+		    return false;
+		} else {
+		    return true;
+		}
 	}
 
 }

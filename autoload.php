@@ -55,6 +55,8 @@ class CommonLoader {
 		}
 	}
 
+	
+
 }
 spl_autoload_register(array('CommonLoader','load'));
 spl_autoload_register(array('CommonLoader','loadQiniu'));

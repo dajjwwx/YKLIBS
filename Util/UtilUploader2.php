@@ -109,35 +109,10 @@ class UtilUploader2 extends UtilUploader
 			UtilHelper::writeToFile($result,'a+');
 			try{
 
-				// $result['Ext'] = $fileext;
-		
-				// UtilHelper::writeToFile(__LINE__,'a+');
-				// UtilHelper::writeToFile($fileext,'w+');
-		
-				// //文件上传前的数据准备
-				// $dataArray = self::fileData($name, $pid, $prefix);
-				// $dataArray[$prefix."filetype"] = $type;
-				// $result['dataArray'] = $dataArray;
-				
-				// UtilHelper::writeToFile(__LINE__,'a+');
-				// UtilHelper::writeToFile($result,'a+');
-		
-				// $model = new File();
-				// $model->attributes = $dataArray;
-		
-				// $file_links = 'links';
-				// $model->$file_links = $dataArray['links'];
-		
-				// $result['Model'] = $model->attributes;
-
-
 				$model = self::setFileAttributes($name, $type, $pid, $prefix);
-
-
-
 		
 				
-				// 			$targetFile = File::model()->generateFilePath($model, true, false, $folder);
+				// 	$targetFile = File::model()->generateFilePath($model, true, false, $folder);
 					
 				// $result['Path']=array(
 				// 		'tempName'=>$tempFile,
@@ -153,41 +128,28 @@ class UtilUploader2 extends UtilUploader
 					$tempFile = $_FILES[$name]['tmp_name'];
 					$fileext = explode( ';', $fileext);
 
-					$targetFile = File::model()->attributeAdapter($model)->getFilePath($folder, false, false);
+					$targetFile = File::model()->attributeAdapter($model)->getFilePath($folder, true, false);
 
-					UtilHelper::writeToFile($tempFile.'==='.$targetFile);
-
+					// UtilHelper::writeToFile($tempFile.'==='.$targetFile);
 
 					//验证文件格式
 					if (in_array(strtolower('*.'.$model->extension),$fileext))
 					{
-						// Uncomment the following line if you want to make the directory if it doesn't exist
-						// mkdir(str_replace('//','/',$targetPath), 0755, true);
-		
-						// $picture = CUploadedFile::getInstanceByName($name);
-		
-						// if(!$picture->saveAs($targetFile))
-						// 	throw new CHttpException(500);
-
-
-
 						$qiniu = new Qiniu();
 
-						if(!$qiniu->putFile($targetFile,$tempFile)){
-							throw new CHttpException(500);
-						}						
+						$data = $qiniu->putFile($targetFile,$tempFile);	
 
-		
 						$response = array(
 								'state'=>'success',
 								'name'=>$model->name,
 								'path'=>$targetFile,
-								'id'=>$model->id
+								'id'=>$model->id,
+								'data'=>$data
 						);
 		
 						echo json_encode($response);
 
-						UtilHelper::writeToFile($response,'a+');
+						// UtilHelper::writeToFile($response,'a+');
 		
 						// $result['Response'] = $response;
 					}
@@ -204,6 +166,8 @@ class UtilUploader2 extends UtilUploader
 			// UtilHelper::writeToFile($result, 'a+');
 			Yii::app()->end();
 	}
+
+
 	/**
 	 * ****************************************************************************
 	 * @todo 上传图片文件

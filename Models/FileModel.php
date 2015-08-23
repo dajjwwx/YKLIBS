@@ -106,6 +106,7 @@ class FileModel
 		$this->extension = $extension;	
 
 	}
+
 	
 	/**
 	 * **************************************************************
@@ -134,17 +135,29 @@ class FileModel
 		}
 		elseif ($this->server == 'qiniu')
 		{
-			$file = $this->generateFilePath($folder, true, false, $thumbOption);
-			$qiniu = new QiNiu();				
-			$key = $qiniu->getKey($this,$folder);
-			if ($isThumb) {
-				return $qiniu->getImageLinks($key,$thumbOption['width']);
-			}
-			else 
+			$file = $this->generateFilePath($folder, false, false, $thumbOption);
+
+			if($isUploadPath)
 			{
-				return $qiniu->getFileLinks($key);
-				
+				return $file;
 			}
+			else
+			{
+				$qiniu = new QiNiu();			
+				return $qiniu->getFilePath($file);
+			}
+			
+			
+
+			// $key = $qiniu->getKey($this,$folder);
+			// if ($isThumb) {
+			// 	return $qiniu->getImageLinks($key,$thumbOption['width']);
+			// }
+			// else 
+			// {
+			// 	return $qiniu->getFileLinks($key);
+				
+			// }
 			
 		}
 		elseif ($this->server == 'baidu') 
@@ -224,6 +237,7 @@ class FileModel
 				
 		return $destination;		
 	}
+
 	
 	
 	/**
