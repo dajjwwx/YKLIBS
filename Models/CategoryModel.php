@@ -95,14 +95,14 @@ class CategoryModel
 	 * 
 	 ******************************************************************************************** 
 	 * 
-	 * @param array $array	//传入的是Category的对象List
+	 * @param CategoryModel[] $objects	//传入的是Category的对象List
 	 * @param int $pid
 	 * @param int $y
 	 * @param array $tdata
 	 */
-	public static function getChildrenObject($array,$pid=0,$y=0,&$tdata=array())
+	public static function getChildrenObject($objects,$pid=0,$y=0,&$tdata=array())
 	{
-		foreach ($array as $value)
+		foreach ($objects as $value)
 		{
 			if($value->pid == $pid)
 			{
@@ -113,19 +113,48 @@ class CategoryModel
 					$value->name = $value->name;					
 				}
 				$tdata[]=$value;
-				self::getChildrenObject($array,$value->id,$n,$tdata);//这里递归调用，不明白递归的朋友，去找几个简单的递归例子熟悉下
+				self::getChildrenObject($objects,$value->id,$n,$tdata);//这里递归调用，不明白递归的朋友，去找几个简单的递归例子熟悉下
 				
 			}
 		}
 		return $tdata;
 	}
+
 	
-	
-	public function generateCategoryList()
+	/**
+	 * *************************************************************************
+	 * @todo 根据分类类型获取分类列表
+	 * *************************************************************************
+	 * @param object $models
+	 * @return array
+	 */
+	public function getCategoryDropdownList($models)
 	{
-		
-	}
+		$list = array();		
 	
+		// $models = self::getCategoryModelByType($type);
+	
+		if($models == null)
+		{
+			$list = array(0=>'无');
+		}
+		else
+		{
+			$items = self::getChildrenObject($models);
+			foreach ($items as $item)
+			{
+				$nbsp = "";
+				for($i=1;$i<$item->deep;$i++){
+					$nbsp .= "--";
+				}
+				$list[$item->id]=$nbsp.$item->name;
+			}
+				
+		}
+	
+		return $list;
+	
+	}
 	
 	
 }
