@@ -1,5 +1,7 @@
 <?php
 
+namespace API;
+
 use Qiniu\Storage\UploadManager;
 use Qiniu\Auth;
 use Qiniu\Storage\BucketManager;
@@ -20,10 +22,10 @@ class Qiniu
 	public function __construct($bucket = 'gaokao')
 	{	
 			
-		$this->bucket = Yii::app()->params['QiNiu'][$bucket]['bucket'];
-		$this->domain = Yii::app()->params['QiNiu'][$bucket]['domain'];
-		$this->accessKey = Yii::app()->params['QiNiu'][$bucket]['accessKey'];
-		$this->secretKey = Yii::app()->params['QiNiu'][$bucket]['secretKey'];
+		$this->bucket = \Yii::app()->params['QiNiu'][$bucket]['bucket'];
+		$this->domain = \Yii::app()->params['QiNiu'][$bucket]['domain'];
+		$this->accessKey = \Yii::app()->params['QiNiu'][$bucket]['accessKey'];
+		$this->secretKey = \Yii::app()->params['QiNiu'][$bucket]['secretKey'];
 
 		// echo $this->accessKey.'---'.$this->secretKey.'<br />';
 
@@ -69,7 +71,7 @@ class Qiniu
 // 		UtilHelper::dump($model);
 
 		if (is_null($folder)) {
-			$folder = Yii::app()->params->uploadFilePath;
+			$folder = \Yii::app()->params->uploadFilePath;
 		}		
 
 		$model = File::model()->attributeAdapter($model, Yii::app()->params->uploadGaoKaoPath);
