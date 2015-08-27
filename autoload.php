@@ -7,26 +7,26 @@ class CommonLoader {
 		$dirs = array('API','API/books','Helper','Models','Util','Libaray/Zend','Helper/Search/Analyzer');
 
 		foreach($dirs as $dir){
-			
+
 			$directories = explode('_', $classname);
-			
+
 			$filename = array_pop($directories);//获取类文件名
-			
+
 			$filepath = $filename.'.php';
-			
+
 			if (is_array($directories) && (count($directories)>0)){
-				
+
 				$dirpath = '';
-				
+
 				foreach ($directories as $direcotry){
 					if ($direcotry){
 						$dirpath .= $direcotry.'/';
 					}
-					
+
 				}
-				
+
 				$filepath = $dirpath.$filename.'.php';
-				
+
 			}
 
 			$filepath =dirname(__FILE__).'/'.$dir.'/'.$filepath;
@@ -42,7 +42,7 @@ class CommonLoader {
 
 	public static function loadQiniu($class)
 	{
-		$filename = dirname(__FILE__).'/'.str_replace('\\', '/', $class).'.php';
+		$filename = dirname(__FILE__).'/API/'.str_replace('\\', '/', $class).'.php';
 
 		if(file_exists($filename)){
 
@@ -54,8 +54,6 @@ class CommonLoader {
 
 		}
 	}
-
-	
 
 }
 spl_autoload_register(array('CommonLoader','load'));
