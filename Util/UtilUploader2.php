@@ -22,6 +22,7 @@ class UtilUploader2 extends UtilUploader
 				'extension'=>strtolower($picture->getExtensionName()),
 				'name'=>$picture->getName(),
 				'size'=>$picture->getSize(),
+				//关于此处的使用在windows上用name而linux使用tempname
 				'mine'=>CFileHelper::getMimeType($picture->getName()),
 				'links'=>md5(date('ymdhis', $now).$picture->getName()),
 				'owner'=>Yii::app()->user->id,
