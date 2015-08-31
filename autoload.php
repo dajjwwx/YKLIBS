@@ -42,7 +42,7 @@ class CommonLoader {
 
 	public static function loadQiniu($class)
 	{
-		$filename = dirname(__FILE__).'/API/'.str_replace('\\', '/', $class).'.php';
+		$filename = dirname(__FILE__).'/'.str_replace('\\', '/', $class).'.php';
 
 		if(file_exists($filename)){
 

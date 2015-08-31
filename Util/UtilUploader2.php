@@ -11,11 +11,10 @@ class UtilUploader2 extends UtilUploader
 	 * @param int $pid
 	 * @return array
 	 */
-	public static function prepareFiledata($name, $pid)
-	{
-		$picture = CUploadedFile::getInstanceByName($name);
-
-		$now = time();
+	public static function prepareFiledata($name, $pid, $filetype=File::FILE_TYPE_BLOG)
+{
+	$picture = CUploadedFile::getInstanceByName($name);
+	$now = time();
 		$dataArray = array(
 				'pid'=>$pid,
 				'created'=>$now,
@@ -27,7 +26,7 @@ class UtilUploader2 extends UtilUploader
 				'owner'=>Yii::app()->user->id,
 				'isfolder'=>0,
 				'hits'=>0,
-				'filetype'=>File::FILE_TYPE_BLOG,
+				'filetype'=>$filetype,
 				'status'=>File::FILE_STATUS_PUBLISHED,
 				'islocal'=>File::FILE_ISLOCAL,
 				'server'=>File::model()->getServer()
@@ -94,6 +93,8 @@ class UtilUploader2 extends UtilUploader
 		// 		'tempName'=>$tempFile,
 		// 		'targetFile'=>$targetFile
 		// );
+		//
+		// print_r($result);
 
 
 		return $model;
@@ -106,18 +107,23 @@ class UtilUploader2 extends UtilUploader
 
 			// $result['REQUEST'] = $_REQUEST;
 			// $result['FILES'] = $_FILES;
-			UtilHelper::writeToFile($result,'a+');
+			// UtilHelper::writeToFile($result,'a+');
 			try{
 
 				$model = self::setFileAttributes($name, $type, $pid, $prefix);
 
+				// $targetFile = File::model()->attributeAdapter($model)->generateFilePath($model, true, false, $folder);
+				$targetFile = File::model()->attributeAdapter($model)->getFilePath($folder, true, false);
 
-				// 	$targetFile = File::model()->generateFilePath($model, true, false, $folder);
+
 
 				// $result['Path']=array(
 				// 		'tempName'=>$tempFile,
 				// 		'targetFile'=>$targetFile
 				// );
+
+				//
+				// echo __LINE__.'  '.$targetFile;
 
 				if ($model->save())
 				{
@@ -130,12 +136,14 @@ class UtilUploader2 extends UtilUploader
 
 					$targetFile = File::model()->attributeAdapter($model)->getFilePath($folder, true, false);
 
-					// UtilHelper::writeToFile($tempFile.'==='.$targetFile);
+					// UtilHelper::dump($tempFile.'==='.$targetFile);
 
 					//验证文件格式
 					if (in_array(strtolower('*.'.$model->extension),$fileext))
 					{
+
 						$qiniu = new \API\Qiniu();
+
 
 						$data = $qiniu->putFile($targetFile,$tempFile);
 
@@ -156,6 +164,7 @@ class UtilUploader2 extends UtilUploader
 				}
 				else
 				{
+					// UtilHelper::dump($model->errors);
 					// UtilHelper::writeToFile($model->errors,'a+');
 				}
 
@@ -302,6 +311,7 @@ class UtilUploader2 extends UtilUploader
 			$dataArray = self::fileData($name, $pid, $prefix);
 			$result['dataArray'] = $dataArray;
 
+
 			UtilHelper::writeToFile($result,'a+');
 
 			$model = new File();
@@ -314,7 +324,7 @@ class UtilUploader2 extends UtilUploader
 			$result['Model'] = $model->attributes;
 
 			$targetFile = File::model()->attributeAdapter($model)->getFilePath($folder, true, false);
-// 			$targetFile = File::model()->generateFilePath($model, true, false, $folder);
+//
 
 			$result['Path']=array(
 					'tempName'=>$tempFile,

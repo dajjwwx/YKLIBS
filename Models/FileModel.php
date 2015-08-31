@@ -143,7 +143,7 @@ class FileModel
 			}
 			else
 			{
-				$qiniu = new QiNiu();			
+				$qiniu = new \API\QiNiu();			
 				return $qiniu->getFilePath($file);
 			}
 			
