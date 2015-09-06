@@ -12,6 +12,7 @@ class UtilDownLoad
   public $errormsg = '';
   public $Filter = array();
   public $filename = '';
+  public $downloadFilename = '';
   public $mineType = 'text/plain';
   public $xlq_filetype = array();
 
@@ -36,6 +37,12 @@ class UtilDownLoad
   function setfilename($filename)
   {
     $this->filename = $filename;
+  }
+
+  function setDownloadFilename($name)
+  {
+  	$this->downloadFilename = $name;
+  	// return $this;
   }
 
   function downloadfile($filename)
@@ -98,9 +105,16 @@ class UtilDownLoad
     }
     else
     {
-      $this->errormsg .= $filename.'不存在!';
-      if ($this->debug) exit($filename.'不存在!');
-      return false;
+      // $this->errormsg .= $filename.'不存在!';
+      // if ($this->debug) exit($filename.'不存在!');
+    	$file = fopen($filename,"r"); 
+
+    	Header("Content-type: application/octet-stream"); 
+		Header("Content-Disposition: attachment; filename=".$this->downloadFilename); 
+		while (!feof ($file)) { 
+			echo fread($file,50000); 
+		}
+      // return false;
     }
   }
 

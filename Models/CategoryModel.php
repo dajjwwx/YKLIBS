@@ -38,6 +38,9 @@ class CategoryModel
 	
 	//额外字段
 	public $deep;			//分类深度
+
+	const TREE_VIEW_CHECK = 'check';		//带checkbox显示分类
+	const TREE_VIEW_LINK = 'link';			//以链接形式显示分类
 	
 	/**
 	 *
@@ -120,6 +123,25 @@ class CategoryModel
 		return $tdata;
 	}
 
+	//获取分类所有子目录
+	public static function getChildrenIds($model, &$result=array())
+	{		
+
+		if($model->children)
+		{
+			foreach ($model->children as $child) {
+				$result[] = $child->id;
+
+				self::getChildrenIds($child, $result);
+
+			}
+		}
+
+		return $result;
+	}
+
+
+
 	
 	/**
 	 * *************************************************************************
@@ -154,6 +176,99 @@ class CategoryModel
 	
 		return $list;
 	
+	}
+
+
+	/**
+	 * ***********************************************************************************
+	 * 生成分类Tree显示
+	 * **********************************************************************************
+	 * options参数使用说明：
+	 * 1. 'treeview' == self::TREE_VIEW_CHECK即返回带checkbox的分类显示;
+	 * 使用：$options = array('treeview'=>self::TREE_VIEW_CHECK)
+	 * 2.'treeview' == self::TREE_VIEW_LINK即返回以链接形式显示分类;
+	 * 		若treeview == self::TREE_VIEW_LINK则还需要添加一个参数link
+	 * 使用：$options = array('treeview'=>self::TREE_VIEW_LINK,'link'=>'blog/list') *
+	 *
+	 * *************************************************************************************
+	 * @param array $arr
+	 * @param number $pid
+	 * @param string $name
+	 * @param array $options //使用说明见options使用说明
+	 * @param array $htmlOptions
+	 * @param string $html
+	 * @return string
+	 */
+	public static function generateTree($arr, $pid = 0,  $options = array('treeview'=>self::TREE_VIEW_CHECK,'name'=>"checkItem"), $htmlOptions=array() ,  &$html = "")
+	{
+		$result = self::getChildrenObject($arr , $pid);
+
+	
+		$html = "<ul ";
+		foreach($htmlOptions as $key => $value){
+			$html .= $key . '="'. $value. '"';
+		}
+		$html .= ">";
+	
+		foreach($result as $val){
+			if ($val->pid == $pid) {
+				$html .= "<li>";
+				//生成带checkbox的列表
+				if($options['treeview'] == self::TREE_VIEW_CHECK){
+					$html .= CHtml::checkBox($options['name'], false, array('value'=>$val->id, 'id'=>$options['name'].'_'.$val->id,'title'=>$val->name));
+				}
+				$html .= '&nbsp;&nbsp;';
+				//生成带link的列表
+				if ($options['treeview'] == self::TREE_VIEW_LINK) {
+					$html .= CHtml::link($val->name.'('.$val->id.')',array($options['link'],'id'=>$val->id));
+				} else {
+					$html .= $val->name.'('.$val->id.')';
+				}
+	
+				$result2 = self::getChildrenObject($arr, $val->id);
+					
+				//var_dump($result);
+					
+				if($result2){
+					$html .= '<i></i>';
+					$html .= self::generateTree($arr, $val->id,$options, $htmlOptions);
+				}
+				$html .= "</li>";
+			}
+		}
+			
+		$html .= "</ul>";
+		echo $html;
+		return $html;
+	}
+
+	/**
+	 *
+	 * Generate the page title, base the breadcrumb
+	 * @param array $breadcrumb
+	 */
+	public function generatePageTitle($breadcrumb, $reverse=false, $connectStr='-')
+	{
+		
+		$pagetitle = "";
+
+		if($reverse){
+			$breadcrumb = array_reverse($breadcrumb);
+		}
+
+
+		foreach ($breadcrumb as $key => $value) {
+			$pagetitle.=$key.$connectStr;
+		}
+	
+		//$breadcrumb[0]为文章标题，对于列表页面则没有文章标题，则会报错，因此在这里判断一下
+		if (isset($breadcrumb[0])) {
+			$pagetitle = str_replace(strval('0'), $breadcrumb[0], $pagetitle);
+		}
+
+		$size = strlen($pagetitle);
+	
+		return substr($pagetitle,0,-2);
 	}
 	
 	

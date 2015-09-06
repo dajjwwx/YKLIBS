@@ -12,9 +12,9 @@ class UtilUploader2 extends UtilUploader
 	 * @return array
 	 */
 	public static function prepareFiledata($name, $pid, $filetype=File::FILE_TYPE_BLOG)
-{
-	$picture = CUploadedFile::getInstanceByName($name);
-	$now = time();
+	{
+		$picture = CUploadedFile::getInstanceByName($name);
+		$now = time();
 		$dataArray = array(
 				'pid'=>$pid,
 				'created'=>$now,
